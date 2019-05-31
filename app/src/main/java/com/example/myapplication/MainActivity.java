@@ -50,6 +50,34 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void searchData(View view){
+        Log.d("MyContactApp", "MainActivity: launching search");
+        Cursor curs = myDb.getAllData();
+        StringBuffer buffer = new StringBuffer();
+        if (editName.getText().toString().isEmpty() && editPhone.getText().toString().isEmpty()
+                && editAddress.getText().toString().isEmpty()) {
+            showMessage("Error", "Nothing to search for!");
+            return;
+        }
+
+        while (curs.moveToNext()){
+            if ((editName.getText().toString().isEmpty() || editName.getText().toString().equals(curs.getString(1)))
+                    && (editPhone.getText().toString().isEmpty() || editPhone.getText().toString().equals(curs.getString(2)))
+                    && (editAddress.getText().toString().isEmpty() || editAddress.getText().toString().equals(curs.getString(3))))
+            {
+                buffer.append("ID: " + curs.getString(0) + "\n");
+                buffer.append("Name: " + curs.getString(1) + "\n");
+                buffer.append("Phone: " + curs.getString(2) + "\n");
+                buffer.append("Address: " + curs.getString(3) + "\n\n");
+            }
+        }
+        if (buffer.toString().isEmpty()) {
+            showMessage("Error", "No matches found");
+            return;
+        }
+        showMessage("Search results", buffer.toString());
+    }
+
     public void viewData(View view) {
         Cursor res = myDb.getAllData();
         Log.d("MyContactApp", "MainActivity: received cursor");
@@ -66,9 +94,13 @@ public class MainActivity extends AppCompatActivity {
             buffer.append("ID: " + res.getString(0) + "\n");
             buffer.append("Name: " + res.getString(1) + "\n");
             buffer.append("Phone: " + res.getString(2) + "\n");
-            buffer.append("Address: " + res.getString(3) + "\n");
+            buffer.append("Address: " + res.getString(3) + "\n\n");
         }
         showMessage("Data", buffer.toString());
+    }
+    public void clearData(View view){
+        myDb.deleteData();
+        Toast.makeText(MainActivity.this, "contacts deleted", Toast.LENGTH_LONG).show();
     }
 
     public void showMessage(String title, String message) {

@@ -62,6 +62,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
     }
+    public void deleteData(){
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(SQL_DELETE_ENTRIES);
+        onCreate(db);
+    }
 
     public Cursor getAllData() {
         Log.d("MyContactApp", "DatabaseHelper: pulling all records from db");
